@@ -5,6 +5,7 @@ import Signup from './src/components/Signup';
 import { Platform, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Dashboard from './src/components/Dashboard';
 import { Icon } from 'react-native-elements';
+import Profile from './src/components/Profile';
 
 const tabNav = TabNavigator(
 	{
@@ -37,7 +38,8 @@ const stackNav = StackNavigator({
 			),
 			headerStyle: { paddingRight: 10, paddingLeft: 10, backgroundColor: '#173746' }
 		})
-	}
+	},
+	Profile: { screen: Profile }
 });
 
 const App = DrawerNavigator({
