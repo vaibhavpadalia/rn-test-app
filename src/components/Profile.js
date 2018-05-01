@@ -1,4 +1,4 @@
-import { View, Text, Button, TouchableOpacity, WebView } from "react-native";
+import { View, Text, Button, TouchableOpacity, WebView, Platform } from "react-native";
 import React, { Component } from "react";
 import { NavigationActions } from "react-navigation";
 // import RNFetchBlob from "react-native-fetch-blob";
@@ -26,12 +26,12 @@ class Profile extends Component {
   componentWillMount() {}
 
   dothis() {
-    // const { config, fs } = RNFetchBlob;
-    // console.warn("mem",fs.dirs.DownloadDir);
     const { config, fs } = RNFetchBlob;
-    let path = fs.dirs.DownloadDir; // this is the pictures directory. You can check the available directories in the wiki.
+    let path = fs.dirs.DocumentDir; // this is the pictures directory. You can check the available directories in the wiki.
+    console.warn("Path", path)
     let options = {
       fileCache: true,
+      path: path + "/pdfurl-guide.pdf",
       addAndroidDownloads: {
         useDownloadManager: true,
         notification: true,
@@ -40,39 +40,24 @@ class Profile extends Component {
         path: path + "/pdfurl-guide.pdf",
         description: "Downloading image."
       }
-    }; // setting it to true will use the device's native download manager and will be shown in the notification bar. // this is the path where your downloaded file will live in
+     }; // setting it to true will use the device's native download manager and will be shown in the notification bar. // this is the path where your downloaded file will live in
     RNFetchBlob.config(options)
-      .fetch("GET", "http://www.axmag.com/download/pdfurl-guide.pdf")
-      .then(res => {
+      .fetch("POST", "http://192.168.15.75:8080/api/isp/v1/customer/sendReceiptOnMail")
+      .then(resp => {
         console.warn("in");
         RNFetchBlob.fs
           .exists(resp.path())
           .then(exist => {
             console.warn(`file ${exist ? "" : "not"} exists`);
+            RNFetchBlob.ios.openDocument(path + "/pdfurl-guide.pdf")
           })
           .catch(() => {
             console.warn("error while checking file for exists");
           });
       })
       .catch((errorMessage, statusCode) => {
-        console.warn("therre");
-
-        //     // error handling
+        console.warn("here",errorMessage);
       });
-    // RNFetchBlob.fetch("GET", "http://www.example.com/images/img1.png", { Authorization: "Bearer access-token..." })
-    //   // more headers  ..
-    //   // when response status code is 200
-    //   .then(res => {
-    //     // the conversion is done in native code
-    //     let base64Str = res.base64();
-    //     // the following conversions are done in js, it's SYNC
-    //     let text = res.text();
-    //     let json = res.json();
-    //   })
-    //   // Status code is not 200
-    //   .catch((errorMessage, statusCode) => {
-    //     // error handling
-    //   });
   }
 
   // state = {
